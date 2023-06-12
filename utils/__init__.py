@@ -1,9 +1,4 @@
-import os
-from enum import Enum
 from .input import Input
-
-
-Action = Enum("Action", ["DELETE", "INSERT", "COMPLETE"])
 
 
 def get_fullname_and_student_number(width: int, height: int):
@@ -14,4 +9,5 @@ def get_fullname_and_student_number(width: int, height: int):
 
     input.lisenter.start()
     input.lisenter.join()
+
     return (input.fullname, input.student_code)

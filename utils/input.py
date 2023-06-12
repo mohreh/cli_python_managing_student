@@ -3,7 +3,7 @@ from pynput.keyboard import Listener, Key
 import os
 
 
-Action = Enum("Action", ["DELETE", "INSERT", "COMPLETE"])
+Action = Enum("Action", ["INSERT", "COMPLETE"])
 
 
 class Input:
@@ -22,9 +22,6 @@ class Input:
 
         print_star_input_box(self.width, self.height, self.fullname, self.student_code)
 
-    def on_press(self, key):
-        pass
-
     def on_release(self, key):
         if key == Key.enter:
             self.action = Action.COMPLETE
@@ -37,6 +34,7 @@ class Input:
 
         if self.complete_hits == 0:
             self.fullname = self.word
+
             if self.action == Action.COMPLETE:
                 self.complete_hits = 1
                 self.word = ""
@@ -45,7 +43,8 @@ class Input:
         else:
             self.student_code = self.word
             if self.action == Action.COMPLETE:
-                self.lisenter.stop()
+                # stop lisening
+                return False
 
         print_star_input_box(self.width, self.height, self.fullname, self.student_code)
 
