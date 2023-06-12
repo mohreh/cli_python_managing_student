@@ -19,6 +19,7 @@ class Student(Data):
                 "admission",
                 "college",
                 "study_field",
+                "study_status",
                 "password",
             ],
         )
