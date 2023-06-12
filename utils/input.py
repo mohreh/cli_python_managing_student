@@ -14,11 +14,14 @@ class Input:
         self, width: int, height: int, fullname: str, student_code: str
     ) -> None:
         self.lisenter = Listener(on_release=self.on_release)
+
         self.width = width
         self.height = height
+
         self.fullname = fullname
         self.student_code = student_code
-        self.complete_hits = 0
+
+        self.hits = 0
 
         print_star_input_box(self.width, self.height, self.fullname, self.student_code)
 
@@ -32,18 +35,17 @@ class Input:
         else:
             self.word = self.word + "{}".format(key)[1:2]
 
-        if self.complete_hits == 0:
+        if self.hits == 0:
             self.fullname = self.word
 
             if self.action == Action.COMPLETE:
-                self.complete_hits = 1
+                self.hits = 1
                 self.word = ""
                 self.student_code = self.word
                 self.action = Action.INSERT
         else:
             self.student_code = self.word
             if self.action == Action.COMPLETE:
-                # stop lisening
                 return False
 
         print_star_input_box(self.width, self.height, self.fullname, self.student_code)
