@@ -38,7 +38,7 @@ class Student(Data):
         if not user:
             return None
         elif user["password"] != password:
-            raise Exception("password is icorect")
+            raise Exception("password is incorrect")
 
         return user
 
