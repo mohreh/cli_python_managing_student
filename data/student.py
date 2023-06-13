@@ -43,4 +43,5 @@ class Student(Data):
         return user
 
     def sign_up(self, data: dict[str, str]):
+        data["study_status"] = "studying"
         self.insert(data)

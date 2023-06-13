@@ -3,7 +3,7 @@ import typing
 
 
 class Data:
-    def __init__(self, name: str, headers: list):
+    def __init__(self, name: str, headers: typing.List[str]):
         headers.insert(0, "id")
 
         self.filename = "./tmp/{}.csv".format(name)
