@@ -1,3 +1,4 @@
+import typing
 from .data import Data
 
 
@@ -25,5 +26,21 @@ class Student(Data):
             ],
         )
 
-    def login(self, data: dict[str, str]):
+    def find(self, username: str) -> dict[str, typing.Any] | None:
+        existings = self.find_all(username=username)
+        if len(existings):
+            return existings[0]
+        else:
+            return None
+
+    def login(self, username: str, password: str) -> dict[str, typing.Any] | None:
+        user = self.find(username)
+        if not user:
+            return None
+        elif user["password"] != password:
+            raise Exception("password is icorect")
+
+        return user
+
+    def sign_up(self, data: dict[str, str]):
         self.insert(data)

@@ -26,3 +26,14 @@ class Data:
             writer.writerow(data)
 
         self.length += 1
+
+    def find_all(self, **kwargs) -> typing.List[dict[str, typing.Any]]:
+        results = []
+        with open(self.filename, "r") as f:
+            reader = csv.DictReader(f, delimiter=",")
+            for row in reader:
+                for key, val in kwargs.items():
+                    if row[key] == val:
+                        results.append(row)
+
+        return results
