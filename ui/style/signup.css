@@ -1,0 +1,39 @@
+Checkbox {
+  margin: 1 2;
+}
+
+Label {
+  margin: 1 2;
+  margin-top: 2;
+}
+
+Input {
+  margin: 1 1;
+  height: 2;
+}
+
+Pretty {
+  margin: 0 2;
+}
+
+Button {
+  margin: 2 2;
+  width: 100%;
+}
+
+VerticalScroll {
+  min-width: 100%;
+}
+
+Select {
+  margin: 0 1;
+  width: 100%;
+}
+
+Input.-valid {
+  border: tall $success 60%;
+}
+
+Input.-valid:focus {
+  border: tall $success;
+}
