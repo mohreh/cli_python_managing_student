@@ -17,12 +17,13 @@ class Student(Data):
                 "national_code",
                 "address",
                 "admission",
-                "college",
+                "college_name",
                 "study_field",
                 "study_status",
                 "password",
+                "username",
             ],
         )
 
-    def login(self, name: str, student_code: int):
-        pass
+    def login(self, data: dict[str, str]):
+        self.insert(data)
