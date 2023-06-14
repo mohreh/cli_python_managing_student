@@ -17,26 +17,29 @@ if __name__ == "__main__":
     errors: List[str] = []
 
     while True:
+        if len(errors) != 0:
+            clear()
+
+            for err in errors:
+                print(err)
+
+            print("\n waiting 5 secons, you will be back to login page")
+            time.sleep(5)
+            errors = []
+
         data = get_fullname_and_student_number(60, 14)
         if len(data["username"].split(" ")) > 1:
             errors.append("username must not contain spaces")
 
         try:
             user = student.login(data["username"], data["password"])
-            if user is None and not data["password"].isdigit():
+            if user is None and (
+                not data["password"].isdigit() or len(data["password"]) < 7
+            ):
                 errors.append(
                     """you are loging is for first time,
 your password is your student code, and must be number"""
                 )
-
-            if len(errors) != 0:
-                clear()
-
-                for err in errors:
-                    print(err)
-
-                print("waiting 5 secons, you will be back to login page")
-                time.sleep(5)
                 continue
 
             if user is None:
@@ -46,6 +49,15 @@ your password is your student code, and must be number"""
                 signup_data.update(data)
 
                 student.sign_up(signup_data)
+                user = student.login(signup_data["username"], signup_data["password"])
+                if user:
+                    app = MainApp(user)
+                    app.run()
+                    break
+                else:
+                    errors.append("something wrong happened.")
+                    errors.append(str(user))
+                    continue
             else:
                 app = MainApp(user)
                 app.run()
