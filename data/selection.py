@@ -19,6 +19,19 @@ class Selection(Data):
             return data[0]
         return None
 
+    def remove_selected_lesson(self, student_id: str, lesson_id: str):
+        data: dict[str, typing.Any] = self.find_with_student_id(student_id)  # type: ignore
+
+        lesson_ids: typing.List[str] = literal_eval(data["lesson_ids"])
+
+        if lesson_id not in lesson_ids:
+            raise Exception(
+                "You have not selected lesson with code {}".format(lesson_id)
+            )
+        lesson_ids.remove(lesson_id)
+
+        self.update_selection(data["student_id"], lesson_ids)
+
     def update_selection(self, student_id: str, lesson_ids: typing.List[str]):
         tempfile = NamedTemporaryFile(mode="w+t", delete=False)
         with open(self.filename, "r") as f, tempfile:

@@ -30,7 +30,7 @@ class MainApp(App):
                 yield Selection(self.user)
 
             with TabPane("Add or remove", id="add_or_remove"):
-                yield AddOrRemove()
+                yield AddOrRemove(self.user)
 
             with TabPane("Confirmation", id="confirmation"):
                 yield Confirmation(self.user)
