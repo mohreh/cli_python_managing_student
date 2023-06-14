@@ -4,6 +4,7 @@ from textual.driver import Driver  # type: ignore
 from textual.widgets import TabPane, TabbedContent  # type: ignore
 from ui.AboutUs import AboutUs
 from ui.AddOrRemove import AddOrRemove
+from ui.ChangePassword import ChangePasswordUsername
 from ui.Confirmation import Confirmation
 from ui.Financial import Financial
 from ui.QuietRequest import QuietRequest  # type: ignore
@@ -43,6 +44,9 @@ class MainApp(App):
 
             with TabPane("About Us", id="about_us"):
                 yield AboutUs(self.user)
+
+            with TabPane("Chagne Username/Password", id="change_username_password"):
+                yield ChangePasswordUsername(self.user)
 
     def action_show_tab(self, tab: str) -> None:
         self.get_child_by_type(TabbedContent).active = tab
