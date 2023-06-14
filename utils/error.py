@@ -1,0 +1,2 @@
+class ConfilictError(Exception):
+    pass
