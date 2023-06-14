@@ -25,9 +25,9 @@ class MainApp(App):
         self.user = user
 
     def compose(self) -> ComposeResult:
-        with TabbedContent(initial="selection"):
+        with TabbedContent(initial="about_us"):
             with TabPane("Selection", id="selection"):
-                yield Selection()
+                yield Selection(self.user)
 
             with TabPane("Add or remove", id="add_or_remove"):
                 yield AddOrRemove()

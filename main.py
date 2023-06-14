@@ -1,8 +1,14 @@
 from typing import List
 import time
 
+from data.lesson import Lesson, lesson_seed
+from data.selection import Selection
+from ui.App import MainApp
+
 
 if __name__ == "__main__":
+    from data.time import time_seed
+
     from utils import get_fullname_and_student_number
     from utils.input import clear
     from ui import SingUp
@@ -41,7 +47,8 @@ your password is your student code, and must be number"""
 
                 student.sign_up(signup_data)
             else:
-                print(user)
+                app = MainApp(user)
+                app.run()
                 break
 
         except Exception as err:

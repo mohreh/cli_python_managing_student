@@ -11,6 +11,24 @@ Confirmation {
   padding: 1 2;
 }
 
+.m-1 {
+  margin: 0 1;
+}
+
+Input,
+Button {
+  width: 100%;
+}
+
+Button {
+  margin: 1;
+  margin-bottom: 2;
+}
+
+#select_label {
+  margin: 1;
+}
+
 .even,
 .odd {
   padding: 1 2;
