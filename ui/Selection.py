@@ -12,14 +12,14 @@ from ui.utils.BaseTableLoader import BaseTableLoader  # type: ignore
 class Selection(BaseTableLoader):
     def compose(self) -> ComposeResult:
         yield Static("To see selected lesson go to confirmation page", classes="m-1")
-        yield Pretty("", classes="m-1", id="selection_errors")
         yield Static("Select New Lesson", id="select_label")
         yield Input(placeholder="Lesson Code", id="lesson_code")
         yield Button(
             "Select Lesson", disabled=True, id="select_lesson", variant="primary"
         )
-        yield Static("Available Lessons")
-        yield DataTable(id="available")
+        yield Pretty("", classes="m-1", id="selection_errors")
+        yield Static("Available Lessons", classes="m-1")
+        yield DataTable(id="available", classes="m-1")
 
     @on(Input.Changed, "#lesson_code")
     def toggle_disable(self):
@@ -43,7 +43,7 @@ class Selection(BaseTableLoader):
 
         except ValueError:
             self.query_one("#selection_errors", expect_type=Pretty).update(
-                "make sure entered code in a number"
+                "make sure entered code is a number"
             )
         except Exception as err:
             self.query_one("#selection_errors", expect_type=Pretty).update(str(err))

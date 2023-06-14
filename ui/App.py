@@ -36,7 +36,7 @@ class MainApp(App):
                 yield Confirmation(self.user)
 
             with TabPane("Financial", id="financial"):
-                yield Financial()
+                yield Financial(self.user)
 
             with TabPane("Quiet Request", id="quiet_request"):
                 yield QuietRequest()

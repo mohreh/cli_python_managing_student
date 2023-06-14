@@ -29,6 +29,15 @@ Button {
   margin: 1;
 }
 
+#select_lesson {
+  margin: 1;
+  margin-bottom: 0;
+}
+
+#selection_errors {
+  margin: 1;
+}
+
 .even,
 .odd {
   padding: 1 2;

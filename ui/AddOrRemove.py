@@ -54,7 +54,7 @@ class AddOrRemove(Base):
 
         except ValueError:
             self.query_one("#add_remove_errors", expect_type=Pretty).update(
-                "make sure entered code in a number"
+                "make sure entered code is a number"
             )
         except Exception as err:
             self.query_one("#add_remove_errors", expect_type=Pretty).update(str(err))
