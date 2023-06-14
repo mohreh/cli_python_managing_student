@@ -1,5 +1,7 @@
 from typing import List
 import time
+from data import entry_exit_time
+from data.entry_exit_time import ACT
 
 from data.lesson import Lesson, lesson_seed
 from data.selection import Selection
@@ -13,10 +15,13 @@ if __name__ == "__main__":
     from utils.input import clear
     from ui import SingUp
     from data import student
+    from data.entry_exit_time import EntryExitTime
 
     errors: List[str] = []
 
     while True:
+        entry_exit = EntryExitTime()
+
         if len(errors) != 0:
             clear()
 
@@ -52,7 +57,9 @@ your password is your student code, and must be number"""
                 user = student.login(signup_data["username"], signup_data["password"])
                 if user:
                     app = MainApp(user)
+                    entry_exit.record(user["id"], ACT.ENTRY)
                     app.run()
+                    entry_exit.record(user["id"], ACT.EXIT)
                     break
                 else:
                     errors.append("something wrong happened.")
@@ -60,7 +67,9 @@ your password is your student code, and must be number"""
                     continue
             else:
                 app = MainApp(user)
+                entry_exit.record(user["id"], ACT.ENTRY)
                 app.run()
+                entry_exit.record(user["id"], ACT.EXIT)
                 break
 
         except Exception as err:
