@@ -48,7 +48,7 @@ your password is your student code, and must be number"""
                 continue
 
             if user is None:
-                sign_up = SingUp()
+                sign_up = SingUp(data["password"])
                 signup_data: dict[str, str] = sign_up.run()  # type: ignore
 
                 signup_data.update(data)

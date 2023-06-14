@@ -1,6 +1,8 @@
+from typing import Type
 from textual import on  # type: ignore
-from textual.app import App, ComposeResult  # type: ignore
+from textual.app import App, CSSPathType, ComposeResult  # type: ignore
 from textual.containers import Container, VerticalScroll  # type: ignore
+from textual.driver import Driver  # type: ignore
 from textual.validation import Number  # type: ignore
 from textual.widgets import (  # type: ignore
     Button,
@@ -8,7 +10,6 @@ from textual.widgets import (  # type: ignore
     Input,
     Label,
     Checkbox,
-    OptionList,
     Pretty,
     Select,
 )
@@ -16,6 +17,16 @@ from textual.widgets import (  # type: ignore
 
 class SingUp(App):
     CSS_PATH = "style/signup.css"
+
+    def __init__(
+        self,
+        student_code: str,
+        driver_class: Type[Driver] | None = None,
+        css_path: CSSPathType | None = None,
+        watch_css: bool = False,
+    ):
+        super().__init__(driver_class, css_path, watch_css)
+        self.student_code = student_code
 
     def compose(self) -> ComposeResult:
         yield Header(name="Sign up")
@@ -29,6 +40,7 @@ class SingUp(App):
 
                 yield Label("Student Code", name="Student Code")
                 yield Input(
+                    value=self.student_code,
                     placeholder="Student Code",
                     id="student_code",
                     validators=Number(),
