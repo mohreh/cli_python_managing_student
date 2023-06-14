@@ -33,7 +33,7 @@ class MainApp(App):
                 yield AddOrRemove()
 
             with TabPane("Confirmation", id="confirmation"):
-                yield Confirmation()
+                yield Confirmation(self.user)
 
             with TabPane("Financial", id="financial"):
                 yield Financial()

@@ -41,3 +41,7 @@ Button {
 .odd {
   background: $primary-background-darken-2;
 }
+
+#confirmation_error {
+  margin: 1;
+}
