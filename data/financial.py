@@ -18,19 +18,25 @@ class Financial(Data):
 
             for row in reader:
                 if row["student_id"] == student_id:
-                    new_row = {}
+                    new_row = row
                     for key, val in kwargs.items():
                         new_row[key] = val
-                    new_row["student_id"] = row["student_id"]
 
                     writer.writerow(new_row)
 
         shutil.move(tempfile.name, self.filename)
 
     def increase_inventory(self, student_id: str, amount: int):
-        self.update_financial(student_id, inventory=amount)
+        data = self.find(student_id)
+        if not data:
+            raise Exception("There is no financial data for this user")
 
-    def find(self, student_id):
+        data["inventory"] = str(int(data["inventory"]) + amount)
+        self.update_financial(student_id, inventory=data["inventory"])
+
+        return data
+
+    def find(self, student_id: str):
         data = self.find_all(student_id=student_id)
         if len(data):
             return data[0]
@@ -41,15 +47,28 @@ class Financial(Data):
         if data:
             raise Exception("This user already has data")
 
-        self.insert({"student_id": student_id, "inventory": 0, "debt": 0})
+        data = {"student_id": student_id, "inventory": 0, "debt": 10}
+        self.insert(data)
+        return data
 
     def remove_financial_data(self, student_id: str):
         pass
 
-    def debt(self, student_id: str):
+    def checkout(self, student_id: str):
         data = self.find(student_id)
         if not data:
             raise Exception("There is no financial data for this user")
+
+        if int(data["inventory"]) < int(data["debt"]):
+            raise Exception(
+                "You have not enough money in your account to checkout your debt"
+            )
+
+        data["inventory"] = int(data["inventory"]) - int(data["debt"])
+        data["debt"] = 0
+
         self.update_financial(
-            student_id, inventory=int(data["inventory"]) - int(data["debt"])
+            student_id, inventory=data["inventory"], debt=data["debt"]
         )
+
+        return data
