@@ -1,3 +1,4 @@
+import csv
 import typing
 from ast import literal_eval
 from data.data import Data
@@ -14,6 +15,19 @@ class Lesson(Data):
     def insert_many(self, data: typing.List[dict[str, typing.Any]]):
         for d in data:
             self.insert(d)
+
+    def all_lessons(self):
+        time = Time()
+        all = []
+        with open(self.filename, "r") as f:
+            reader = csv.DictReader(f, fieldnames=self.headers)
+            for row in reader:
+                row["time"] = []
+                for time_id in literal_eval(row["time_id"]):
+                    lesson_time = time.find_with_id(time_id)
+                    row["time"].append(lesson_time)
+                all.append(all)
+        return all
 
     def find(self, code: str):
         lesson = self.find_all(code=code)
