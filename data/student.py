@@ -1,4 +1,6 @@
 import typing
+
+from data.financial import Financial
 from .data import Data
 
 
@@ -45,3 +47,6 @@ class Student(Data):
     def sign_up(self, data: dict[str, str]):
         data["study_status"] = "studying"
         self.insert(data)
+
+        financial = Financial()
+        financial.insert_base_financial(data["id"])
