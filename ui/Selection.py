@@ -1,9 +1,9 @@
 from typing import Any, List
-from rich.console import RenderableType
-from textual import on
-from textual.app import ComposeResult
-from textual.containers import Container, Horizontal  # type: ignore
-from textual.widgets import Button, DataTable, Input, Pretty, Static
+from rich.console import RenderableType  # type: ignore
+from textual import on  # type: ignore
+from textual.app import ComposeResult  # type: ignore
+from textual.widgets import Button, DataTable, Input, Pretty, Static  # type: ignore
+
 
 from data.lesson import Lesson
 from data.selection import Selection as LessonSelection
