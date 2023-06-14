@@ -3,6 +3,7 @@ import typing
 from ast import literal_eval
 from data.data import Data
 from random import randint
+from data.perofessor import Perofessor
 
 from data.time import LESSON_TIME, WEEK, WEEK_DAYS, Time
 
@@ -10,7 +11,7 @@ from data.time import LESSON_TIME, WEEK, WEEK_DAYS, Time
 class Lesson(Data):
     def __init__(self):
         # time_id is a tuple
-        super().__init__("lesson", ["name", "code", "time_id", "credit"])
+        super().__init__("lesson", ["name", "code", "time_id", "credit", "teacher_id"])
 
     def insert_many(self, data: typing.List[dict[str, typing.Any]]):
         for d in data:
@@ -18,6 +19,7 @@ class Lesson(Data):
 
     def all_lessons(self):
         time = Time()
+        perofessor = Perofessor()
         all = []
         with open(self.filename, "r") as f:
             reader = csv.DictReader(f)
@@ -27,6 +29,9 @@ class Lesson(Data):
                     lesson_time = time.find_with_id(str(time_id))
                     row["time"].append(lesson_time)
                 del row["time_id"]
+
+                row["teacher"] = perofessor.find(row["teacher_id"])["name"]
+                del row["teacher_id"]
                 all.append(row)
         return all
 
@@ -82,6 +87,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 3,
+                "teacher_id": 1,
             },
             # insert PHYSICS 2, PHYSICS 1 and 2 has confilicts
             {
@@ -100,6 +106,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 3,
+                "teacher_id": 1,
             },
             # insert data structure
             {
@@ -118,6 +125,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 4,
+                "teacher_id": 2,
             },
             # insert ALGORITHMS
             {
@@ -136,6 +144,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 3,
+                "teacher_id": 2,
             },
             # insert OS, OS and ALGORITHMS has confilicts
             {
@@ -154,6 +163,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 3,
+                "teacher_id": 3,
             },
             # insert Compiler
             {
@@ -167,6 +177,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 2,
+                "teacher_id": 4,
             },
             # insert Network
             {
@@ -185,6 +196,7 @@ def lesson_seed():
                     ),
                 ],
                 "credit": 4,
+                "teacher_id": 3,
             },
         ]
     )

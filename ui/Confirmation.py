@@ -5,6 +5,7 @@ from textual.app import ComposeResult  # type: ignore
 from textual.widgets import Button, DataTable, Pretty, Static  # type: ignore
 
 from data.lesson import Lesson
+from data.perofessor import Perofessor
 from data.selection import Selection as LessonSelection
 from data.time import Time
 from ui.utils.BaseTableLoader import BaseTableLoader  # type: ignore
@@ -32,6 +33,7 @@ class Confirmation(BaseTableLoader):
         selection_service = LessonSelection()
         time_service = Time()
         lesson_service = Lesson()
+        perofessor = Perofessor()
 
         user_selection = selection_service.find_with_student_id(self.user["id"])
         if not user_selection:
@@ -59,12 +61,18 @@ class Confirmation(BaseTableLoader):
             del lesson["time_id"]
             del lesson["id"]
             lesson["time"] = " - ".join(time_str)
+
+            lesson["perofessor"] = perofessor.find(lesson["teacher_id"])["name"]
+            del lesson["teacher_id"]
+
             selected_lessons.append(lesson.values())
 
         headers = lesson_service.headers
         headers.remove("time_id")
+        headers.remove("teacher_id")
         headers.remove("id")
         headers.append("time")
+        headers.append("perofessor")
 
         if not len(selected_table.columns.values()):
             selected_table.add_columns(*headers)
@@ -93,8 +101,10 @@ class Confirmation(BaseTableLoader):
 
         headers = lesson_service.headers
         headers.remove("time_id")
+        headers.remove("teacher_id")
         headers.remove("id")
         headers.append("time")
+        headers.append("perofessor")
 
         self.load_table(available_table, headers, available_lessons)
         self.load_selected_lessons()

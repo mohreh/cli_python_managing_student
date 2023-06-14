@@ -67,7 +67,9 @@ class Selection(BaseTableLoader):
 
         headers = lesson_service.headers
         headers.remove("time_id")
+        headers.remove("teacher_id")
         headers.remove("id")
         headers.append("time")
+        headers.append("perofessor")
 
         self.load_table(table, headers, all)
