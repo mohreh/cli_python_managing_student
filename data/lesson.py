@@ -20,13 +20,14 @@ class Lesson(Data):
         time = Time()
         all = []
         with open(self.filename, "r") as f:
-            reader = csv.DictReader(f, fieldnames=self.headers)
+            reader = csv.DictReader(f)
             for row in reader:
                 row["time"] = []
                 for time_id in literal_eval(row["time_id"]):
-                    lesson_time = time.find_with_id(time_id)
+                    lesson_time = time.find_with_id(str(time_id))
                     row["time"].append(lesson_time)
-                all.append(all)
+                del row["time_id"]
+                all.append(row)
         return all
 
     def find(self, code: str):
@@ -46,7 +47,6 @@ class Lesson(Data):
             lesson_time = time.find_with_id(str(time_id))
 
             for other in with_lessons:
-                print(other["name"])
                 for time_id_ in literal_eval(other["time_id"]):
                     other_time = time.find_with_id(str(time_id_))
                     if lesson_time["hour"] == other_time["hour"]:

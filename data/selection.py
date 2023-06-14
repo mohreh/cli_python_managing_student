@@ -1,3 +1,4 @@
+from ast import literal_eval
 from tempfile import NamedTemporaryFile
 import shutil
 import csv
@@ -5,6 +6,7 @@ import typing
 
 from data.data import Data
 from data.lesson import Lesson
+from utils.error import ConfilictError
 
 
 class Selection(Data):
@@ -15,17 +17,23 @@ class Selection(Data):
         data = self.find_all(student_id=student_id)
         if len(data):
             return data[0]
-        raise Exception("You have not yet select lessons")
+        return None
 
-    def update_selection(self, id: str, lesson_ids: typing.List[str]):
-        tempfile = NamedTemporaryFile(mode="w", delete=False)
+    def update_selection(self, student_id: str, lesson_ids: typing.List[str]):
+        tempfile = NamedTemporaryFile(mode="w+t", delete=False)
         with open(self.filename, "r") as f, tempfile:
-            reader = csv.DictReader(f, fieldnames=self.headers)
+            reader = csv.DictReader(f)
             writer = csv.DictWriter(tempfile, fieldnames=self.headers)
+            writer.writeheader()
+
             for row in reader:
-                if row["id"] == id:
-                    row["lesson_ids"] = lesson_ids
-                    writer.writerow(row)
+                if row["student_id"] == student_id:
+                    new_row = {
+                        "id": row["id"],
+                        "student_id": row["student_id"],
+                        "lesson_ids": lesson_ids,
+                    }
+                    writer.writerow(new_row)
 
         shutil.move(tempfile.name, self.filename)
 
@@ -38,29 +46,30 @@ class Selection(Data):
                 "there is not any lesson with code: {}".format(new_lesson_code)
             )
 
-        try:
-            other_lessons = []
-            data = self.find_with_student_id(student_id)
+        other_lessons = []
 
-            for lesson_code in data["lesson_ids"]:
-                other_lessons.append(lesson.find(lesson_code))
-
-            conflicts = lesson.check_for_conflict(new_lesson, other_lessons)
-            if len(conflicts):
-                conflicts_names = ""
-                for conflict in conflicts:
-                    conflicts_names += ", " + conflict["name"]
-
-                error = "{} has conflict with {}".format(
-                    new_lesson["name"], conflicts_names
-                )
-                raise Exception(error)
-
-            other_lessons.append(new_lesson)
-
-            self.update_selection(
-                data["id"], lesson_ids=[lesson["code"] for lesson in other_lessons]
-            )
-
-        except Exception:
+        data = self.find_with_student_id(student_id)
+        if not data:
             self.insert({"student_id": student_id, "lesson_ids": [new_lesson["code"]]})
+            return
+
+        for lesson_code in literal_eval(data["lesson_ids"]):
+            other_lessons.append(lesson.find(lesson_code))
+
+        conflicts = lesson.check_for_conflict(new_lesson, other_lessons)
+        if len(conflicts):
+            conflicts_names = ""
+            for conflict in conflicts:
+                conflicts_names += ", " + conflict["name"]
+
+            error = "{} has conflict with {}".format(
+                new_lesson["name"], conflicts_names
+            )
+            raise ConfilictError(error)
+
+        other_lessons.append(new_lesson)
+
+        self.update_selection(
+            data["student_id"],
+            lesson_ids=[lesson["code"] for lesson in other_lessons],
+        )
