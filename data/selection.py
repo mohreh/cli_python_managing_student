@@ -41,12 +41,12 @@ class Selection(Data):
 
             for row in reader:
                 if row["student_id"] == student_id:
-                    new_row = {
+                    row = {
                         "id": row["id"],
                         "student_id": row["student_id"],
                         "lesson_ids": lesson_ids,
                     }
-                    writer.writerow(new_row)
+                writer.writerow(row)
 
         shutil.move(tempfile.name, self.filename)
 

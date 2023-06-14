@@ -18,11 +18,10 @@ class Financial(Data):
 
             for row in reader:
                 if row["student_id"] == student_id:
-                    new_row = row
                     for key, val in kwargs.items():
-                        new_row[key] = val
+                        row[key] = val
 
-                    writer.writerow(new_row)
+                writer.writerow(row)
 
         shutil.move(tempfile.name, self.filename)
 
