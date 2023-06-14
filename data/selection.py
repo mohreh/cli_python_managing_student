@@ -71,12 +71,9 @@ class Selection(Data):
 
         conflicts = lesson.check_for_conflict(new_lesson, other_lessons)
         if len(conflicts):
-            conflicts_names = ""
-            for conflict in conflicts:
-                conflicts_names += ", " + conflict["name"]
-
             error = "{} has conflict with {}".format(
-                new_lesson["name"], conflicts_names
+                new_lesson["name"],
+                ", ".join(conflict["name"] for conflict in conflicts),
             )
             raise ConfilictError(error)
 

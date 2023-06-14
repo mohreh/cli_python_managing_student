@@ -52,6 +52,9 @@ class Lesson(Data):
             lesson_time = time.find_with_id(str(time_id))
 
             for other in with_lessons:
+                if lesson["name"] == other["name"]:
+                    result.append(other)
+                    continue
                 for time_id_ in literal_eval(other["time_id"]):
                     other_time = time.find_with_id(str(time_id_))
                     if lesson_time["hour"] == other_time["hour"]:
@@ -197,6 +200,24 @@ def lesson_seed():
                 ],
                 "credit": 4,
                 "teacher_id": 3,
+            },
+            {
+                "name": "NETWORK",
+                "code": randint(100, 999),
+                "time_id": [
+                    time.find(
+                        WEEK.ALL.name,
+                        WEEK_DAYS.SATURDAY.name,
+                        LESSON_TIME["10AM-12PM"].name,
+                    ),
+                    time.find(
+                        WEEK.ALL.name,
+                        WEEK_DAYS.SUNDAY.name,
+                        LESSON_TIME["10AM-12PM"].name,
+                    ),
+                ],
+                "credit": 4,
+                "teacher_id": 5,
             },
         ]
     )

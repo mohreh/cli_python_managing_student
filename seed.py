@@ -8,6 +8,7 @@ def seed():
     try:
         os.remove("./tmp/lesson.csv")
         os.remove("./tmp/perofessor.csv")
+        os.remove("./tmp/selection.csv")
         os.remove("./tmp/time.csv")
     except Exception:
         pass
