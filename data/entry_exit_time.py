@@ -29,3 +29,7 @@ class EntryExitTime(Data):
             )
         )
         self.insert({"action": act.name, "time": time_str, "student_id": student_id})
+
+    def find_for_student_id(self, student_id: str):
+        data = self.find_all(student_id=student_id)
+        return data
