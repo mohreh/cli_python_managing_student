@@ -85,9 +85,7 @@ class Selection(Data):
             raise Exception("There is not any student with this id")
 
         if user["study_status"] == "quited":
-            raise Exception(
-                "You have quited studying and can't have financial information"
-            )
+            raise Exception("You have quited studying and can't select lesssons")
 
         lesson = Lesson()
 
