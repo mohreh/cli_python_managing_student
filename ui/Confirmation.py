@@ -5,10 +5,9 @@ from textual.app import ComposeResult  # type: ignore
 from textual.widgets import Button, DataTable, Pretty, Static  # type: ignore
 
 from data.lesson import Lesson
-from data.perofessor import Perofessor
 from data.selection import Selection as LessonSelection
-from data.time import Time
-from ui.utils.BaseTableLoader import BaseTableLoader  # type: ignore
+from ui.utils.BaseTableLoader import BaseTableLoader
+from utils.print_exam_card import printـexam_card  # type: ignore
 
 
 class Confirmation(BaseTableLoader):
@@ -21,6 +20,15 @@ class Confirmation(BaseTableLoader):
 
         yield Static("Available Lessons", classes="m-1")
         yield DataTable(id="available", classes="m-1")
+        yield Button("Print Your Exam Card", id="print_exam_card")
+        yield Pretty("", id="print_errors")
+
+    @on(Button.Pressed, "#print_exam_card")
+    def print_exam_card(self):
+        try:
+            printـexam_card(self.user["id"])
+        except Exception as err:
+            self.query_one("#print_errors", expect_type=Pretty).update(str(err))
 
     @on(Button.Pressed, "#reload")
     def reload(self):
