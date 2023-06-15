@@ -1,6 +1,3 @@
-import csv
-import shutil
-from tempfile import NamedTemporaryFile
 import typing
 
 from data.financial import Financial
@@ -32,25 +29,19 @@ class Student(Data):
         )
 
     def update_data(self, id: str, **kwargs):
-        tempfile = NamedTemporaryFile(mode="w+t", delete=False)
-        with open(self.filename, "r") as f, tempfile:
-            reader = csv.DictReader(f)
-            writer = csv.DictWriter(tempfile, fieldnames=self.headers)
-            writer.writeheader()
+        self.update_row("id", id, **kwargs)
 
-            for row in reader:
-                if row["id"] == id:
-                    for key, val in kwargs.items():
-                        row[key] = val
-
-                writer.writerow(row)
-
-        shutil.move(tempfile.name, self.filename)
+    def find_with_id(self, id: str):
+        data = self.find_all(id=id)
+        if len(data):
+            return data[0]
+        else:
+            return None
 
     def find(self, username: str) -> dict[str, typing.Any] | None:
-        existings = self.find_all(username=username)
-        if len(existings):
-            return existings[0]
+        data = self.find_all(username=username)
+        if len(data):
+            return data[0]
         else:
             return None
 
@@ -68,4 +59,4 @@ class Student(Data):
         self.insert(data)
 
         financial = Financial()
-        financial.insert_base_financial(data["id"])
+        financial.insert_base_financial(data)

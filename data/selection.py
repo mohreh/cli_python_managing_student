@@ -1,11 +1,9 @@
 from ast import literal_eval
-from tempfile import NamedTemporaryFile
-import shutil
-import csv
 import typing
 
 from data.data import Data
 from data.lesson import Lesson
+from data.student import Student
 from utils.error import ConfilictError
 
 
@@ -20,7 +18,9 @@ class Selection(Data):
         return None
 
     def remove_selected_lesson(self, student_id: str, lesson_id: str):
-        data: dict[str, typing.Any] = self.find_with_student_id(student_id)  # type: ignore
+        data = self.find_with_student_id(student_id)
+        if not data:
+            raise Exception("There is not data for student")
 
         lesson_ids: typing.List[str] = literal_eval(data["lesson_ids"])
 
@@ -32,25 +32,23 @@ class Selection(Data):
 
         self.update_selection(data["student_id"], lesson_ids)
 
+    def remove(self, student_id: str):
+        self.remove_row("student_id", student_id)
+
     def update_selection(self, student_id: str, lesson_ids: typing.List[str]):
-        tempfile = NamedTemporaryFile(mode="w+t", delete=False)
-        with open(self.filename, "r") as f, tempfile:
-            reader = csv.DictReader(f)
-            writer = csv.DictWriter(tempfile, fieldnames=self.headers)
-            writer.writeheader()
-
-            for row in reader:
-                if row["student_id"] == student_id:
-                    row = {
-                        "id": row["id"],
-                        "student_id": row["student_id"],
-                        "lesson_ids": lesson_ids,
-                    }
-                writer.writerow(row)
-
-        shutil.move(tempfile.name, self.filename)
+        self.update_row("student_id", student_id, lesson_ids=lesson_ids)
 
     def select(self, student_id: str, new_lesson_code: str):
+        student = Student()
+        user = student.find_with_id(student_id)
+        if not user:
+            raise Exception("There is not any student with this id")
+
+        if user["study_status"] == "quited":
+            raise Exception(
+                "You have quited studying and can't have financial information"
+            )
+
         lesson = Lesson()
 
         new_lesson = lesson.find(new_lesson_code)

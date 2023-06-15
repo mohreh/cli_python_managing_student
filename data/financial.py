@@ -1,7 +1,4 @@
-import csv
-import shutil
-from tempfile import NamedTemporaryFile
-import typing
+from typing import Any
 from data.data import Data
 
 
@@ -10,20 +7,10 @@ class Financial(Data):
         super().__init__("financial", ["student_id", "inventory", "debt"])
 
     def update_financial(self, student_id: str, **kwargs):
-        tempfile = NamedTemporaryFile(mode="w+t", delete=False)
-        with open(self.filename, "r") as f, tempfile:
-            reader = csv.DictReader(f)
-            writer = csv.DictWriter(tempfile, fieldnames=self.headers)
-            writer.writeheader()
+        self.update_row("student_id", student_id, **kwargs)
 
-            for row in reader:
-                if row["student_id"] == student_id:
-                    for key, val in kwargs.items():
-                        row[key] = val
-
-                writer.writerow(row)
-
-        shutil.move(tempfile.name, self.filename)
+    def remove(self, student_id: str):
+        self.remove_row("student_id", student_id)
 
     def increase_inventory(self, student_id: str, amount: int):
         data = self.find(student_id)
@@ -41,17 +28,22 @@ class Financial(Data):
             return data[0]
         return None
 
-    def insert_base_financial(self, student_id: str):
-        data = self.find(student_id)
+    def insert_base_financial(self, user: dict[str, Any]):
+        data = self.find(user["id"])
         if data:
             raise Exception("This user already has data")
 
-        data = {"student_id": student_id, "inventory": 0, "debt": 10}
+        if user["study_status"] == "quited":
+            raise Exception(
+                "You have quited studying and can't have financial information"
+            )
+
+        data = {"student_id": user["id"], "inventory": 0, "debt": 10}
         self.insert(data)
         return data
 
     def remove_financial_data(self, student_id: str):
-        pass
+        self.remove_row("student_id", student_id)
 
     def checkout(self, student_id: str):
         data = self.find(student_id)
