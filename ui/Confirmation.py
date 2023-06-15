@@ -31,53 +31,37 @@ class Confirmation(BaseTableLoader):
         selected_table.clear()
 
         selection_service = LessonSelection()
-        time_service = Time()
-        lesson_service = Lesson()
-        perofessor = Perofessor()
 
-        user_selection = selection_service.find_with_student_id(self.user["id"])
-        if not user_selection:
+        selected_lessons = selection_service.all_selected_lessons(self.user["id"])
+
+        selected_lessons_array = []
+        if not selected_lessons or not len(selected_lessons):
             self.query_one("#confirmation_error", expect_type=Pretty).update(
                 "you have not select lessons yet"
             )
             return
 
-        selected_lesson_codes = user_selection["lesson_ids"]
-
-        selected_lessons = []
-        for code in literal_eval(selected_lesson_codes):
-            lesson = lesson_service.find(code)
-            if not lesson:
-                return
-
-            time_str = []
-            for time_id in literal_eval(lesson["time_id"]):
-                lesson_time = time_service.find_with_id(str(time_id))
-                time_str.append(
-                    "{} {} {}".format(
-                        lesson_time["week"], lesson_time["day"], lesson_time["hour"]
-                    )
-                )
+        for lesson in selected_lessons:
             del lesson["time_id"]
             del lesson["id"]
-            lesson["time"] = " - ".join(time_str)
-
-            lesson["perofessor"] = perofessor.find(lesson["teacher_id"])["name"]
             del lesson["teacher_id"]
 
-            selected_lessons.append(lesson.values())
+            selected_lessons_array.append(lesson.values())
 
+        lesson_service = Lesson()
         headers = lesson_service.headers
+
         headers.remove("time_id")
         headers.remove("teacher_id")
         headers.remove("id")
+
         headers.append("time")
         headers.append("perofessor")
 
         if not len(selected_table.columns.values()):
             selected_table.add_columns(*headers)
 
-        selected_table.add_rows(selected_lessons)
+        selected_table.add_rows(selected_lessons_array)
         selected_table.cursor_type = "row"
         selected_table.zebra_stripes = True
 

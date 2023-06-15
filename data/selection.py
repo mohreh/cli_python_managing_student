@@ -3,7 +3,9 @@ import typing
 
 from data.data import Data
 from data.lesson import Lesson
+from data.perofessor import Perofessor
 from data.student import Student
+from data.time import Time
 from utils.error import ConfilictError
 
 
@@ -37,6 +39,44 @@ class Selection(Data):
 
     def update_selection(self, student_id: str, lesson_ids: typing.List[str]):
         self.update_row("student_id", student_id, lesson_ids=lesson_ids)
+
+    def all_selected_lessons(self, student_id: str):
+        time = Time()
+        lesson_service = Lesson()
+        perofessor = Perofessor()
+
+        selected_lessons: typing.List[dict[str, typing.Any]] = []
+
+        user_selection = self.find_with_student_id(student_id)
+        if not user_selection:
+            return selected_lessons
+
+        selected_lesson_codes = user_selection["lesson_ids"]
+
+        for code in literal_eval(selected_lesson_codes):
+            lesson = lesson_service.find(code)
+            if not lesson:
+                return
+
+            time_str = []
+            for time_id in literal_eval(lesson["time_id"]):
+                lesson_time = time.find_with_id(str(time_id))
+                time_str.append(
+                    "{} {} {}".format(
+                        lesson_time["week"], lesson_time["day"], lesson_time["hour"]
+                    )
+                )
+            lesson["time"] = " - ".join(time_str)
+
+            lesson_teacher = perofessor.find(lesson["teacher_id"])
+            if not lesson_teacher:
+                lesson["perofessor"] = None
+            else:
+                lesson["perofessor"] = lesson_teacher["name"]
+
+            selected_lessons.append(lesson)
+
+        return selected_lessons
 
     def select(self, student_id: str, new_lesson_code: str):
         student = Student()
