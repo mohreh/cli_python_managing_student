@@ -28,12 +28,15 @@ class QuitRequest(Base):
         message = self.query_one("#quit_message", expect_type=Input).value
 
         quit_service = QuitRequestService()
-        quit_service.submit_quit_request(message, self.user["id"])
+        try:
+            quit_service.submit_quit_request(message, self.user["id"])
 
-        self.app.exit(
-            {
-                "message": "refresh",
-                "username": self.user["username"],
-                "password": self.user["password"],
-            }
-        )
+            self.app.exit(
+                {
+                    "message": "refresh",
+                    "username": self.user["username"],
+                    "password": self.user["password"],
+                }
+            )
+        except Exception as err:
+            self.query_one("#quit_log", expect_type=Pretty).update(str(err))
