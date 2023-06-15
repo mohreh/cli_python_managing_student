@@ -7,6 +7,10 @@ Confirmation {
   padding-top: 0;
 }
 
+.bold {
+  text-style: bold;
+}
+
 .p-2 {
   padding: 1 2;
 }

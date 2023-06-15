@@ -33,38 +33,45 @@ class Financial(Base):
             classes=classes,
             disabled=disabled,
         )
+        self.err = ""
         financial_service = FinancialService()
         financial_info = financial_service.find(self.user["id"])
         if not financial_info:
-            financial_info = financial_service.insert_base_financial(self.user["id"])
-            self.inventory = int(financial_info["inventory"])
-            self.debt = int(financial_info["debt"])
+            try:
+                financial_info = financial_service.insert_base_financial(self.user)
+                self.inventory = int(financial_info["inventory"])
+                self.debt = int(financial_info["debt"])
+            except Exception as err:
+                self.err = str(err)
         else:
             self.inventory = int(financial_info["inventory"])
             self.debt = int(financial_info["debt"])
 
     def compose(self) -> ComposeResult:
-        yield Static(
-            "Financial Info for user {}".format(
-                self.user["first_name"] + " " + self.user["last_name"]
-            ),
-            classes="m-1",
-        )
-        yield Pretty("", id="financial_errors", classes="m-1")
-        yield Static(
-            "Your inventory amout: {}".format(self.inventory),
-            classes="m-1",
-            id="inventory_amount",
-        )
-        yield Static(
-            "Your debt amout: {}".format(self.debt), classes="m-1", id="debt_amount"
-        )
-        yield Button("Checkout your debt", id="checkout", variant="primary")
-        yield Input(
-            placeholder="enter amount to increase your inventory",
-            id="charge_amount",
-        )
-        yield Button("Charge the account", id="charge", variant="success")
+        if len(self.err):
+            yield Pretty(self.err)
+        else:
+            yield Static(
+                "Financial Info for user {}".format(
+                    self.user["first_name"] + " " + self.user["last_name"]
+                ),
+                classes="m-1",
+            )
+            yield Pretty("", id="financial_errors", classes="m-1")
+            yield Static(
+                "Your inventory amout: {}".format(self.inventory),
+                classes="m-1",
+                id="inventory_amount",
+            )
+            yield Static(
+                "Your debt amout: {}".format(self.debt), classes="m-1", id="debt_amount"
+            )
+            yield Button("Checkout your debt", id="checkout", variant="primary")
+            yield Input(
+                placeholder="enter amount to increase your inventory",
+                id="charge_amount",
+            )
+            yield Button("Charge the account", id="charge", variant="success")
 
     @on(Button.Pressed, "#checkout")
     def checkout(self):

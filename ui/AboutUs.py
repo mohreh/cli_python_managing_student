@@ -3,8 +3,8 @@ from textual.app import ComposeResult  # type: ignore
 from textual.containers import Container, Vertical  # type: ignore
 from textual.widgets import DataTable, Static  # type: ignore
 
-from data import student
 from data.entry_exit_time import EntryExitTime
+from data.student import Student
 from ui.utils.Base import Base  # type: ignore
 
 
@@ -16,6 +16,8 @@ class AboutUs(Base):
         yield DataTable(id="entry_exit", classes="p-2")
 
     def on_mount(self) -> None:
+        student = Student()
+
         container = self.query_one("#container", expect_type=Static)
         for index, header in enumerate(student.headers):
             container._add_children(
