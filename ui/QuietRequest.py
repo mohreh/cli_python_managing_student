@@ -1,11 +1,9 @@
-import time
 from textual import on  # type: ignore
 from textual.app import ComposeResult  # type: ignore
 from textual.widgets import Button, Input, Pretty, Static  # type: ignore
 
 from data.quit_request import QuitRequest as QuitRequestService
 from ui.utils.Base import Base
-from utils.error import RefreshPage
 
 
 class QuitRequest(Base):

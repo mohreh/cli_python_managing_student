@@ -34,3 +34,11 @@ class ChangePasswordUsername(Base):
         self.user = student_service.find(username_input.value) or self.user
         username_input.value = self.user["username"]
         password_input.value = self.user["password"]
+
+        self.app.exit(
+            {
+                "message": "refresh",
+                "username": self.user["username"],
+                "password": self.user["password"],
+            }
+        )
