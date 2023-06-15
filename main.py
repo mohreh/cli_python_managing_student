@@ -1,21 +1,37 @@
-from typing import List
+from typing import Any, List
 import time
-from data import entry_exit_time
-from data.entry_exit_time import ACT
 
-from data.lesson import Lesson, lesson_seed
-from data.selection import Selection
-from ui.App import MainApp
+
+def run_app(user: dict[str, Any]):
+    from ui.App import MainApp
+    from data.student import Student
+
+    result = None
+    student = Student()
+
+    while True:
+        if result:
+            if result["message"] == "refresh":
+                user = student.login(result["username"], result["password"]) or user
+                result["message"] = "exit"
+            else:
+                break
+
+        app = MainApp(user)
+        result = app.run()
+        if result is None:
+            result = {"message": "exit"}
 
 
 if __name__ == "__main__":
-    from data.time import time_seed
-
+    from data.entry_exit_time import ACT
     from utils import get_fullname_and_student_number
     from utils.input import clear
     from ui import SingUp
-    from data import student
+    from data.student import Student
     from data.entry_exit_time import EntryExitTime
+
+    student = Student()
 
     errors: List[str] = []
 
@@ -56,9 +72,8 @@ your password is your student code, and must be number"""
                 student.sign_up(signup_data)
                 user = student.login(signup_data["username"], signup_data["password"])
                 if user:
-                    app = MainApp(user)
                     entry_exit.record(user["id"], ACT.ENTRY)
-                    app.run()
+                    run_app(user)
                     entry_exit.record(user["id"], ACT.EXIT)
                     break
                 else:
@@ -66,9 +81,8 @@ your password is your student code, and must be number"""
                     errors.append(str(user))
                     continue
             else:
-                app = MainApp(user)
                 entry_exit.record(user["id"], ACT.ENTRY)
-                app.run()
+                run_app(user)
                 entry_exit.record(user["id"], ACT.EXIT)
                 break
 
