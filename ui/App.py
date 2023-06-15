@@ -1,7 +1,7 @@
 from typing import Any, Type
 from textual.app import App, CSSPathType, ComposeResult  # type: ignore
 from textual.driver import Driver  # type: ignore
-from textual.widgets import Pretty, TabPane, TabbedContent  # type: ignore
+from textual.widgets import Footer, Header, Pretty, TabPane, TabbedContent  # type: ignore
 from ui.AboutUs import AboutUs
 from ui.AddOrRemove import AddOrRemove
 from ui.ChangePassword import ChangePasswordUsername
@@ -14,6 +14,7 @@ from ui.Selection import Selection
 
 class MainApp(App):
     CSS_PATH = "style/app.css"
+    BINDINGS = [("Q", "exit_app", "Exit")]
 
     def __init__(
         self,
@@ -65,5 +66,10 @@ class MainApp(App):
             with TabPane("Chagne Username/Password", id="change_username_password"):
                 yield ChangePasswordUsername(self.user)
 
+        yield Footer()
+
     def action_show_tab(self, tab: str) -> None:
         self.get_child_by_type(TabbedContent).active = tab
+
+    def action_exit_app(self) -> None:
+        self.exit({"message": "exit"})
